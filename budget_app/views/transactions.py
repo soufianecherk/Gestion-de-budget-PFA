@@ -30,6 +30,11 @@ class Transactions(tk.Frame):
         self.add_button = tk.Button(self, text="Add Transaction", command=self.add_transaction)
         self.add_button.pack()
 
+    # Ajout d'un bouton pour revenir au tableau de bord
+        self.back_button = tk.Button(self, text="Retour au Tableau de Bord", 
+                                     command=lambda: self.controller.show_frame("Dashboard"))
+        self.back_button.pack(pady=5)
+
     def add_transaction(self):
         date = self.date_entry.get()
         category = self.category_entry.get()

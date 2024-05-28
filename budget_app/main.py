@@ -5,7 +5,8 @@ from views.history import History
 from views.budget_summary import BudgetSummary
 from views.goals import Goals
 from views.notes import Notes
-from utils.db import create_tables  # Ajoutez cette ligne
+from utils.db import create_tables
+from PIL import Image, ImageTk, ImageFilter
 
 class App(tk.Tk):
     def __init__(self):
@@ -13,8 +14,23 @@ class App(tk.Tk):
         self.title("Gestion de Budget")
         self.geometry("800x600")
 
-        self.container = tk.Frame(self)
-        self.container.pack(side="top", fill="both", expand=True)
+        # Create a Canvas to hold the background image
+        self.canvas = tk.Canvas(self, width=800, height=600)
+        self.canvas.pack(fill="both", expand=True)
+
+        # Load and blur the background image
+        self.bg_image = Image.open("budget_app/gestion_budget.png")  # Replace with the path to your image
+        self.bg_image = self.bg_image.filter(ImageFilter.GaussianBlur(5))
+        self.bg_image = self.bg_image.resize((2000, 1200), Image.LANCZOS)
+        self.bg_photo = ImageTk.PhotoImage(self.bg_image)
+
+        # Add the background image to the Canvas
+        self.canvas.create_image(0, 0, image=self.bg_photo, anchor="nw")
+
+        # Create a Frame to hold other widgets on top of the Canvas
+        self.container = tk.Frame(self.canvas, bg="white", bd=2, relief="groove")  # Add bg and border for better visibility
+        self.container.place(relx=0.5, rely=0.5, anchor="center", width=600, height=400)  # Center the container
+
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
 
@@ -23,7 +39,6 @@ class App(tk.Tk):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
-
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("Dashboard")
@@ -32,23 +47,7 @@ class App(tk.Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-    def create_menu(self):
-        menu = tk.Menu(self)
-        self.config(menu=menu)
-
-        file_menu = tk.Menu(menu)
-        menu.add_cascade(label="Menu", menu=file_menu)
-        file_menu.add_command(label="Tableau de Bord", command=lambda: self.show_frame("Dashboard"))
-        file_menu.add_command(label="Transactions", command=lambda: self.show_frame("Transactions"))
-        file_menu.add_command(label="Historique", command=lambda: self.show_frame("History"))
-        file_menu.add_command(label="Résumé Budget", command=lambda: self.show_frame("BudgetSummary"))
-        file_menu.add_command(label="Objectifs", command=lambda: self.show_frame("Goals"))
-        file_menu.add_command(label="Notes", command=lambda: self.show_frame("Notes"))
-        file_menu.add_separator()
-        file_menu.add_command(label="Quitter", command=self.quit)
-
 if __name__ == "__main__":
-    create_tables()  # Ajoutez cette ligne pour créer les tables avant de lancer l'application
+    create_tables()  # Assurez-vous que les tables sont créées avant de lancer l'application
     app = App()
-    app.create_menu()
     app.mainloop()

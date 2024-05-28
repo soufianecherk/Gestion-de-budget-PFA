@@ -22,6 +22,11 @@ class History(tk.Frame):
 
         self.load_history()
 
+    # Ajout d'un bouton pour revenir au tableau de bord
+        self.back_button = tk.Button(self, text="Retour au Tableau de Bord", 
+                                     command=lambda: self.controller.show_frame("Dashboard"))
+        self.back_button.pack(pady=5)
+
     def load_history(self):
         conn = create_connection()
         with conn:

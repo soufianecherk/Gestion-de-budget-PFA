@@ -33,6 +33,11 @@ class Goals(tk.Frame):
 
         self.load_goals()
 
+    # Ajout d'un bouton pour revenir au tableau de bord
+        self.back_button = tk.Button(self, text="Retour au Tableau de Bord", 
+                                     command=lambda: self.controller.show_frame("Dashboard"))
+        self.back_button.pack(pady=5)
+
     def add_goal(self):
         description = self.description_entry.get()
         target_amount = float(self.target_amount_entry.get())

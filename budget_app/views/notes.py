@@ -21,3 +21,8 @@ class Notes(tk.Frame):
         with open("notes.txt", "a") as file:
             file.write(note_content + "\n")
         self.text.delete("1.0", tk.END)
+
+    # Ajout d'un bouton pour revenir au tableau de bord
+        self.back_button = tk.Button(self, text="Retour au Tableau de Bord", 
+                                     command=lambda: self.controller.show_frame("Dashboard"))
+        self.back_button.pack(pady=5)
