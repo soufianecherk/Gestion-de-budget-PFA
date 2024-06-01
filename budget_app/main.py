@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import messagebox
+import sqlite3
 from views.dashboard import Dashboard
 from views.transactions import Transactions
 from views.history import History
@@ -8,9 +10,100 @@ from views.notes import Notes
 from utils.db import create_tables
 from PIL import Image, ImageTk, ImageFilter
 
+# Fonction pour créer la base de données et la table des utilisateurs
+def create_db():
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+    )
+    ''')
+    conn.commit()
+    conn.close()
+
+# Fenêtre de login
+def show_login(on_success, on_register):
+    login_window = tk.Tk()
+    login_window.title("Login")
+    login_window.geometry("300x200")
+
+    tk.Label(login_window, text="Nom d'utilisateur").pack(pady=5)
+    username_entry = tk.Entry(login_window)
+    username_entry.pack(pady=5)
+
+    tk.Label(login_window, text="Mot de passe").pack(pady=5)
+    password_entry = tk.Entry(login_window, show="*")
+    password_entry.pack(pady=5)
+
+    def attempt_login():
+        username = username_entry.get()
+        password = password_entry.get()
+        if check_credentials(username, password):
+            login_window.destroy()
+            on_success()
+        else:
+            messagebox.showerror("Erreur", "Nom d'utilisateur ou mot de passe incorrect")
+
+    tk.Button(login_window, text="Se connecter", command=attempt_login).pack(pady=5)
+    tk.Button(login_window, text="S'inscrire", command=lambda: [login_window.destroy(), on_register()]).pack(pady=5)
+
+    login_window.mainloop()
+
+# Fenêtre d'inscription
+def show_register():
+    register_window = tk.Tk()
+    register_window.title("Inscription")
+    register_window.geometry("300x200")
+
+    tk.Label(register_window, text="Nom d'utilisateur").pack(pady=5)
+    username_entry = tk.Entry(register_window)
+    username_entry.pack(pady=5)
+
+    tk.Label(register_window, text="Mot de passe").pack(pady=5)
+    password_entry = tk.Entry(register_window, show="*")
+    password_entry.pack(pady=5)
+
+    def attempt_register():
+        username = username_entry.get()
+        password = password_entry.get()
+        if register_user(username, password):
+            messagebox.showinfo("Succès", "Inscription réussie. Vous pouvez maintenant vous connecter.")
+            register_window.destroy()
+            show_login(lambda: App().mainloop(), show_register)
+        else:
+            messagebox.showerror("Erreur", "Nom d'utilisateur déjà pris")
+
+    tk.Button(register_window, text="S'inscrire", command=attempt_register).pack(pady=5)
+    register_window.mainloop()
+
+# Vérifie les informations de connexion
+def check_credentials(username, password):
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+    result = cursor.fetchone()
+    conn.close()
+    return result is not None
+
+# Enregistre un nouvel utilisateur
+def register_user(username, password):
+    try:
+        conn = sqlite3.connect('users.db')
+        cursor = conn.cursor()
+        cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
+        conn.commit()
+        conn.close()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+
+# Classe principale de l'application
 class App(tk.Tk):
     def __init__(self):
-        tk.Tk.__init__(self)
+        super().__init__()
         self.title("Gestion de Budget")
         self.geometry("800x600")
 
@@ -48,6 +141,6 @@ class App(tk.Tk):
         frame.tkraise()
 
 if __name__ == "__main__":
-    create_tables()  # Assurez-vous que les tables sont créées avant de lancer l'application
-    app = App()
-    app.mainloop()
+    create_db()
+    create_tables()
+    show_login(lambda: App().mainloop(), show_register)
