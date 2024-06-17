@@ -1,17 +1,17 @@
 import sqlite3
 from sqlite3 import Error
 
-def create_connection():
+def create_connection(db_file):
     conn = None
     try:
-        conn = sqlite3.connect('budget.db')
+        conn = sqlite3.connect(db_file)
         return conn
     except Error as e:
         print(e)
     return conn
 
 def create_tables():
-    conn = create_connection()
+    conn = create_connection('budget.db')
     with conn:
         c = conn.cursor()
         c.execute('''
