@@ -17,11 +17,12 @@ def create_tables():
         c.execute('''
             CREATE TABLE IF NOT EXISTS transactions (
                 id INTEGER PRIMARY KEY,
-                date TEXT,
+                date DATE,
                 category TEXT,
                 subcategory TEXT,
                 amount REAL,
-                note TEXT
+                note TEXT,
+                total_budget REAL
             )
         ''')
         c.execute('''

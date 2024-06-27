@@ -48,14 +48,34 @@ class BudgetSummary(tk.Frame):
                 ''')
                 rows = c.fetchall()
                 for row in rows:
-                    # Supposez que vous avez une méthode pour obtenir le budget total par catégorie
-                    total_budget = 1000  # Valeur d'exemple
+                    category = row[0]
                     total_spent = row[1]
+                    total_budget = self.get_total_budget_by_category(category)
                     remaining = total_budget - total_spent
-                    self.tree.insert("", "end", values=(row[0], total_budget, total_spent, remaining))
+                    self.tree.insert("", "end", values=(category, total_budget, total_spent, remaining))
             except sqlite3.Error as e:
                 print(e)
             finally:
                 conn.close()
         else:
             print("Error! Cannot create the database connection.")
+
+    def get_total_budget_by_category(self, category):
+        conn = create_connection("budget.db")
+        total_budget = 0
+        if conn is not None:
+            try:
+                c = conn.cursor()
+                c.execute('''
+                    SELECT SUM(total_budget) 
+                    FROM transactions 
+                    WHERE category=?
+                ''', (category,))
+                result = c.fetchone()
+                if result is not None:
+                    total_budget = result[0] if result[0] is not None else 0
+            except sqlite3.Error as e:
+                print(e)
+            finally:
+                conn.close()
+        return total_budget

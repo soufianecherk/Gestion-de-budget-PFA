@@ -19,6 +19,7 @@ class Transactions(tk.Frame):
 
         tk.Label(entry_frame, text="Date:").grid(row=0, column=0, padx=5, pady=3)
         self.date_entry = tk.Entry(entry_frame)
+        self.date_entry.insert(0, "YYYY-MM-DD")
         self.date_entry.grid(row=0, column=1, padx=5, pady=3)
 
         tk.Label(entry_frame, text="Category:").grid(row=1, column=0, padx=5, pady=3)
@@ -33,9 +34,14 @@ class Transactions(tk.Frame):
         self.amount_entry = tk.Entry(entry_frame)
         self.amount_entry.grid(row=3, column=1, padx=5, pady=3)
 
-        tk.Label(entry_frame, text="Note:").grid(row=4, column=0, padx=5, pady=3)
+        tk.Label(entry_frame, text="Budget:").grid(row=4, column=0, padx=5, pady=3)
+        self.budget_entry = tk.Entry(entry_frame)
+        self.budget_entry.insert(0, "0")  # Valeur par défaut
+        self.budget_entry.grid(row=4, column=1, padx=5, pady=3)
+
+        tk.Label(entry_frame, text="Note:").grid(row=5, column=0, padx=5, pady=3)
         self.note_entry = tk.Entry(entry_frame)
-        self.note_entry.grid(row=4, column=1, padx=5, pady=3)
+        self.note_entry.grid(row=5, column=1, padx=5, pady=3)
 
         # Button frame to hold the action buttons
         button_frame = tk.Frame(self)
@@ -57,12 +63,13 @@ class Transactions(tk.Frame):
         self.back_button.pack(pady=10)
 
         # Treeview to display transactions
-        self.transaction_tree = ttk.Treeview(self, columns=("ID", "Date", "Category", "Subcategory", "Amount", "Note"), show="headings")
+        self.transaction_tree = ttk.Treeview(self, columns=("ID", "Date", "Category", "Subcategory", "Amount", "Budget", "Note"), show="headings")
         self.transaction_tree.heading("ID", text="ID")
         self.transaction_tree.heading("Date", text="Date")
         self.transaction_tree.heading("Category", text="Category")
         self.transaction_tree.heading("Subcategory", text="Subcategory")
         self.transaction_tree.heading("Amount", text="Amount")
+        self.transaction_tree.heading("Budget", text="Budget")
         self.transaction_tree.heading("Note", text="Note")
         self.transaction_tree.pack(padx=10, pady=10)
 
@@ -81,12 +88,15 @@ class Transactions(tk.Frame):
         
         # Insert each transaction into the treeview
         for transaction in transactions:
-            self.transaction_tree.insert("", tk.END, values=(transaction.id, transaction.date, transaction.category, transaction.subcategory, transaction.amount, transaction.note))
+            self.transaction_tree.insert("", tk.END, values=(transaction.id, transaction.date, transaction.category, transaction.subcategory, transaction.amount, transaction.note, transaction.total_budget))
 
     def get_all_transactions(self):
         conn = sqlite3.connect('budget.db')
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM transactions')
+        # Afficher Les transactions du mois actuelle
+        cursor.execute('''SELECT * FROM transactions WHERE strftime('%Y', date) = strftime('%Y', 'now') AND strftime('%m', date) = strftime('%m', 'now');''')
+        # Afficher toutes les transactions
+        #cursor.execute('SELECT * FROM transactions')
         rows = cursor.fetchall()
         conn.close()
         
@@ -103,10 +113,11 @@ class Transactions(tk.Frame):
         category = self.category_entry.get()
         subcategory = self.subcategory_entry.get()
         amount = float(self.amount_entry.get())
+        total_budget = float(self.budget_entry.get())
         note = self.note_entry.get()
 
         # Create a new Transaction object and save it to the database
-        transaction = Transaction(None, date, category, subcategory, amount, note)
+        transaction = Transaction(None, date, category, subcategory, amount, total_budget, note)
         transaction.save()
 
         # Reload transactions in the treeview and clear entry fields
@@ -125,10 +136,11 @@ class Transactions(tk.Frame):
         category = self.category_entry.get()
         subcategory = self.subcategory_entry.get()
         amount = float(self.amount_entry.get())
+        total_budget = float(self.budget_entry.get())
         note = self.note_entry.get()
 
         # Update the selected transaction
-        transaction = Transaction(transaction_id, date, category, subcategory, amount, note)
+        transaction = Transaction(transaction_id, date, category, subcategory, amount, total_budget, note)
         transaction.update()
 
         # Reload transactions in the treeview and clear entry fields
@@ -145,7 +157,7 @@ class Transactions(tk.Frame):
         transaction_id = self.transaction_tree.item(selected_item, "values")[0]
 
         # Delete the selected transaction
-        transaction = Transaction(transaction_id, None, None, None, None, None)
+        transaction = Transaction(transaction_id, None, None, None, None, None, None)
         transaction.delete()
 
         # Reload transactions in the treeview and clear entry fields
@@ -158,13 +170,14 @@ class Transactions(tk.Frame):
         self.category_entry.delete(0, tk.END)
         self.subcategory_entry.delete(0, tk.END)
         self.amount_entry.delete(0, tk.END)
+        self.budget_entry.delete(0, tk.END)
         self.note_entry.delete(0, tk.END)
 
     def on_tree_select(self, event):
         # Populate entry fields when a transaction is selected in the treeview
         selected_item = self.transaction_tree.selection()
         if selected_item:
-            transaction_id, date, category, subcategory, amount, note = self.transaction_tree.item(selected_item, "values")
+            transaction_id, date, category, subcategory, amount, total_budget, note = self.transaction_tree.item(selected_item, "values")
             self.date_entry.delete(0, tk.END)
             self.date_entry.insert(0, date)
             self.category_entry.delete(0, tk.END)
@@ -173,6 +186,8 @@ class Transactions(tk.Frame):
             self.subcategory_entry.insert(0, subcategory)
             self.amount_entry.delete(0, tk.END)
             self.amount_entry.insert(0, amount)
+            self.budget_entry.delete(0, tk.END)
+            self.budget_entry.insert(0, total_budget)
             self.note_entry.delete(0, tk.END)
             self.note_entry.insert(0, note)
 
