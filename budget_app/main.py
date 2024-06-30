@@ -8,7 +8,7 @@ from views.history import History
 from views.budget_summary import BudgetSummary
 from views.goals import Goals
 from views.notes import Notes
-import Login
+from views.graphs_window import GraphsWindow
 from utils.db import create_tables
 
 # Fonction pour créer la base de données et la table des utilisateurs
@@ -62,7 +62,9 @@ def show_login(on_success, on_register):
         password = password_entry.get()
         if check_credentials(username, password):
             login_window.destroy()
-            on_success(username)  # Passer le nom d'utilisateur ici
+            app = App(username)
+            app.show_frame("Dashboard")
+            app.mainloop()
         else:
             messagebox.showerror("Erreur", "Nom d'utilisateur ou mot de passe incorrect")
 
@@ -174,14 +176,14 @@ class App(tk.Tk):
         self.container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (Transactions, History, BudgetSummary, Goals, Notes, Dashboard, Login):
+        for F in (Transactions, History, BudgetSummary, Goals, Notes, Dashboard, GraphsWindow):  # Ajout de GraphsWindow ici
             page_name = F.__name__
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
 
         self.show_frame("Login")
-
+    
     def show_frame(self, page_name):
         frame = self.frames.get(page_name)
         if frame:
@@ -189,7 +191,13 @@ class App(tk.Tk):
         else:
             print(f"Frame '{page_name}' not found!")
 
+
 if __name__ == "__main__":
     create_db()
     create_tables()
     show_login(lambda username: App(username).mainloop(), show_register)
+
+
+
+            
+

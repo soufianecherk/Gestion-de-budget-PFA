@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 
 class Dashboard(tk.Frame):
     def __init__(self, parent, controller):
@@ -35,13 +36,18 @@ class Dashboard(tk.Frame):
                                       font=("Helvetica", 12), height=2, width=20)
         self.notes_button.pack(pady=10)
 
+        self.graphs_button = tk.Button(self, text="Graphiques", 
+                                       command=lambda: self.controller.show_frame("GraphsWindow"), 
+                                       font=("Helvetica", 12), height=2, width=20)
+        self.graphs_button.pack(pady=10)
+
         self.logout_button = tk.Button(self, text="Déconnexion", 
                                        command=self.logout, 
                                        font=("Helvetica", 12))
         self.logout_button.pack(pady=20, side=tk.BOTTOM)
 
-        # Centrage des éléments dans la fenêtre principale
         self.label.pack(anchor="center")
 
     def logout(self):
         self.controller.show_frame("Login")
+
