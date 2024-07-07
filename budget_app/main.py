@@ -8,6 +8,7 @@ from views.history import History
 from views.budget_summary import BudgetSummary
 from views.goals import Goals
 from views.notes import Notes
+from views.admin import AdminApp
 from views.graphs_window import GraphsWindow
 from utils.db import create_tables
 
@@ -60,10 +61,16 @@ def show_login(on_success, on_register):
     def attempt_login():
         username = username_entry.get()
         password = password_entry.get()
+        
         if check_credentials(username, password):
             login_window.destroy()
             app = App(username)
             app.show_frame("Dashboard")
+            app.mainloop()
+        elif check_admin_credentials(username, password):
+            login_window.destroy()
+            app = App(username)  # Instanciation de l'application avec l'utilisateur admin
+            app.show_frame("AdminApp")
             app.mainloop()
         else:
             messagebox.showerror("Erreur", "Nom d'utilisateur ou mot de passe incorrect")
@@ -135,6 +142,15 @@ def check_credentials(username, password):
     conn.close()
     return result is not None
 
+# Fonction pour vérifier les informations de connexion pour l'admin
+def check_admin_credentials(username, password):
+    conn = sqlite3.connect('admin.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
+    result = cursor.fetchone()
+    conn.close()
+    return result is not None
+
 # Enregistre un nouvel utilisateur
 def register_user(username, password):
     try:
@@ -176,7 +192,7 @@ class App(tk.Tk):
         self.container.grid_columnconfigure(0, weight=1)
 
         self.frames = {}
-        for F in (Transactions, History, BudgetSummary, Goals, Notes, Dashboard, GraphsWindow):  # Ajout de GraphsWindow ici
+        for F in (Transactions, History, BudgetSummary, Goals, Notes, Dashboard, AdminApp, GraphsWindow):
             page_name = F.__name__
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
@@ -196,8 +212,3 @@ if __name__ == "__main__":
     create_db()
     create_tables()
     show_login(lambda username: App(username).mainloop(), show_register)
-
-
-
-            
-

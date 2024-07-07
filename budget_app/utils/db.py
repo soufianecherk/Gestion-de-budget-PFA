@@ -10,6 +10,21 @@ def create_connection(db_file):
         print(e)
     return conn
 
+# Fonction pour créer la base de données et la table des utilisateurs
+def create_db():
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+    )
+    ''')
+    conn.commit()
+    conn.close()
+
+# Fonction pour créer la base de données et la table de budget
 def create_tables():
     conn = create_connection('budget.db')
     with conn:

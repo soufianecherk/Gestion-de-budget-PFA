@@ -1,23 +1,17 @@
 import sqlite3
 
-def create_connection(db_file):
-    try:
-        conn = sqlite3.connect(db_file)
-        return conn
-    except sqlite3.Error as e:
-        print(e)
-    return None
+# Connexion à la base de données
+conn = sqlite3.connect('users.db')
+cursor = conn.cursor()
 
-def alter_table():
-    conn = create_connection("budget.db")
-    if conn is not None:
-        try:
-            c = conn.cursor()
-            c.execute("ALTER TABLE transactions ADD COLUMN total_budget REAL DEFAULT 0")
-            conn.commit()
-        except sqlite3.Error as e:
-            print(e)
-        finally:
-            conn.close()
+# ID de la ligne à supprimer
+id_to_delete = 12  # Remplacez par l'ID réel que vous souhaitez supprimer
 
-alter_table()
+# Exécution de la requête DELETE
+cursor.execute("DELETE FROM users WHERE id = ?", (id_to_delete,))
+
+# Validation de la suppression en commitant la transaction
+conn.commit()
+
+# Fermeture de la connexion
+conn.close()

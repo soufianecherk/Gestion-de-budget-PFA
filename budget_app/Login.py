@@ -28,19 +28,29 @@ class LoginWindow:
         username = self.username_entry.get()
         password = self.password_entry.get()
         
-        conn = sqlite3.connect('users.db')
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
-        user = cursor.fetchone()
-        conn.close()
-        
-        if user:
+        # Vérifier d'abord dans users.db
+        if self.check_credentials(username, password, 'users.db'):
             messagebox.showinfo("Login réussi", "Bienvenue, vous êtes connecté.")
+            self.on_success()
+        # Vérifier ensuite dans admin.db si aucune correspondance dans users.db
+        elif self.check_credentials(username, password, 'admin.db'):
+            messagebox.showinfo("Login réussi", "Bienvenue, vous êtes connecté en tant qu'administrateur.")
             self.on_success()
         else:
             messagebox.showerror("Erreur de login", "Nom d'utilisateur ou mot de passe incorrect.")
+
+    def check_credentials(self, username, password, database):
+        conn = sqlite3.connect(database)
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM admin WHERE username = ? AND password = ?', (username, password))
+        user = cursor.fetchone()
+        conn.close()
+        return user is not None
 
 def show_login(on_success, on_register):
     root = tk.Tk()
     app = LoginWindow(root, on_success, on_register)
     root.mainloop()
+
+if __name__ == "__main__":
+    show_login(lambda: print("Logged in"), lambda: print("Register clicked"))
