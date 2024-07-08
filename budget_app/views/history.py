@@ -34,11 +34,12 @@ class History(tk.Frame):
         self.history_tree.column("Note", width=150, anchor='center')
 
         self.load_history()
-
+    
         # Ajout d'un bouton pour revenir au tableau de bord
+        btn_font = ("Helvetica", 12, "bold")
         self.back_button = tk.Button(self, text="Retour au Tableau de Bord", 
-                                     command=lambda: self.controller.show_frame("Dashboard"))
-        self.back_button.pack(pady=5)
+                                     command=lambda: self.controller.show_frame("Dashboard"), font=btn_font, bg="#2196F3", fg="white")
+        self.back_button.pack(pady=20)
 
     def load_history(self):
         conn = create_connection("budget.db")

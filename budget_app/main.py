@@ -186,7 +186,7 @@ class App(tk.Tk):
 
         # Create a Frame to hold other widgets on top of the Canvas
         self.container = tk.Frame(self.canvas, bg="#FFFFFF", bd=2, relief="groove")
-        self.container.place(relx=0.5, rely=0.5, anchor="center", width=900, height=500)
+        self.container.place(relx=0.5, rely=0.5, anchor="center", width=1000, height=600)
 
         self.container.grid_rowconfigure(0, weight=1)
         self.container.grid_columnconfigure(0, weight=1)
@@ -197,8 +197,8 @@ class App(tk.Tk):
             frame = F(parent=self.container, controller=self)
             self.frames[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-
-        self.show_frame("Login")
+        
+        self.show_frame("Dashboard")
     
     def show_frame(self, page_name):
         frame = self.frames.get(page_name)
@@ -206,7 +206,10 @@ class App(tk.Tk):
             frame.tkraise()
         else:
             print(f"Frame '{page_name}' not found!")
-
+    
+    def logout(self):
+        self.destroy()
+        show_login(lambda username: App(username).mainloop(), show_register)
 
 if __name__ == "__main__":
     create_db()

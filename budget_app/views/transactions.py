@@ -22,15 +22,15 @@ class Transactions(tk.Frame):
         self.date_entry.insert(0, "YYYY-MM-DD")
         self.date_entry.grid(row=0, column=1, padx=5, pady=3)
 
-        tk.Label(entry_frame, text="Category:").grid(row=1, column=0, padx=5, pady=3)
+        tk.Label(entry_frame, text="Catégorie:").grid(row=1, column=0, padx=5, pady=3)
         self.category_entry = tk.Entry(entry_frame)
         self.category_entry.grid(row=1, column=1, padx=5, pady=3)
 
-        tk.Label(entry_frame, text="Subcategory:").grid(row=2, column=0, padx=5, pady=3)
+        tk.Label(entry_frame, text="Sous-catégorie:").grid(row=2, column=0, padx=5, pady=3)
         self.subcategory_entry = tk.Entry(entry_frame)
         self.subcategory_entry.grid(row=2, column=1, padx=5, pady=3)
 
-        tk.Label(entry_frame, text="Amount:").grid(row=3, column=0, padx=5, pady=3)
+        tk.Label(entry_frame, text="Montant:").grid(row=3, column=0, padx=5, pady=3)
         self.amount_entry = tk.Entry(entry_frame)
         self.amount_entry.grid(row=3, column=1, padx=5, pady=3)
 
@@ -43,23 +43,27 @@ class Transactions(tk.Frame):
         self.note_entry = tk.Entry(entry_frame)
         self.note_entry.grid(row=5, column=1, padx=5, pady=3)
 
+        # Couleurs et styles
+        btn_color = "#4CAF50"  # Vert pour les boutons
+        btn_font = ("Helvetica", 12, "bold")
+
         # Button frame to hold the action buttons
         button_frame = tk.Frame(self)
         button_frame.pack(pady=10)
 
-        self.add_button = tk.Button(button_frame, text="Add Transaction", command=self.add_transaction)
+        self.add_button = tk.Button(button_frame, text="Ajouter Transaction", command=self.add_transaction, font=btn_font, bg=btn_color, fg="white")
         self.add_button.grid(row=0, column=0, padx=5)
 
-        self.edit_button = tk.Button(button_frame, text="Edit Transaction", command=self.edit_transaction)
+        self.edit_button = tk.Button(button_frame, text="Modifier Transaction", command=self.edit_transaction, font=btn_font, bg=btn_color, fg="white")
         self.edit_button.grid(row=0, column=1, padx=5)
 
-        self.delete_button = tk.Button(button_frame, text="Delete Transaction", command=self.delete_transaction)
+        self.delete_button = tk.Button(button_frame, text="Supprimer Transaction", command=self.delete_transaction, font=btn_font, bg=btn_color, fg="white")
         self.delete_button.grid(row=0, column=2, padx=5)
 
-        self.clear_button = tk.Button(button_frame, text="Clear Fields", command=self.clear_entries)
+        self.clear_button = tk.Button(button_frame, text="Effacer", command=self.clear_entries, font=btn_font, bg=btn_color, fg="white")
         self.clear_button.grid(row=0, column=3, padx=5)
 
-        self.back_button = tk.Button(self, text="Retour au Tableau de Bord", command=lambda: self.controller.show_frame("Dashboard"))
+        self.back_button = tk.Button(self, text="Retour au Tableau de Bord", command=lambda: self.controller.show_frame("Dashboard"), font=btn_font, bg="#2196F3", fg="white")
         self.back_button.pack(pady=10)
 
         # Treeview to display transactions

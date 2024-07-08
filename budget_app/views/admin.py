@@ -23,24 +23,28 @@ class AdminApp(tk.Frame):
         tk.Label(entry_frame, text="Mot de passe:").grid(row=1, column=0, padx=5, pady=3)
         self.password_entry = tk.Entry(entry_frame, show="*")
         self.password_entry.grid(row=1, column=1, padx=5, pady=3)
+        
+        # Couleurs et styles
+        btn_color = "#4CAF50"  # Vert pour les boutons
+        btn_font = ("Helvetica", 12, "bold")
 
         # Button frame to hold the action buttons
         button_frame = tk.Frame(self)
         button_frame.pack(pady=10)
 
-        self.add_button = tk.Button(button_frame, text="Ajouter Utilisateur", command=self.add_user)
+        self.add_button = tk.Button(button_frame, text="Ajouter Utilisateur", command=self.add_user, font=btn_font, bg=btn_color, fg="white")
         self.add_button.grid(row=0, column=0, padx=5)
 
-        self.edit_button = tk.Button(button_frame, text="Modifier Utilisateur", command=self.edit_user)
+        self.edit_button = tk.Button(button_frame, text="Modifier Utilisateur", command=self.edit_user, font=btn_font, bg=btn_color, fg="white")
         self.edit_button.grid(row=0, column=1, padx=5)
 
-        self.delete_button = tk.Button(button_frame, text="Supprimer Utilisateur", command=self.delete_user)
+        self.delete_button = tk.Button(button_frame, text="Supprimer Utilisateur", command=self.delete_user, font=btn_font, bg=btn_color, fg="white")
         self.delete_button.grid(row=0, column=2, padx=5)
 
-        self.clear_button = tk.Button(button_frame, text="Effacer Champs", command=self.clear_entries)
+        self.clear_button = tk.Button(button_frame, text="Effacer Champs", command=self.clear_entries, font=btn_font, bg=btn_color, fg="white")
         self.clear_button.grid(row=0, column=3, padx=5)
 
-        self.back_button = tk.Button(self, text="Retour au Tableau de Bord", command=lambda: self.controller.show_frame("Dashboard"))
+        self.back_button = tk.Button(self, text="Retour au Tableau de Bord", command=lambda: self.controller.show_frame("Dashboard"), font=btn_font, bg="#2196F3", fg="white")
         self.back_button.pack(pady=10)
 
         # Treeview to display users
@@ -54,6 +58,13 @@ class AdminApp(tk.Frame):
 
         # Load users initially
         self.load_users()
+    
+        btn_font = ("Helvetica", 12, "bold")
+
+        self.logout_button = tk.Button(self, text="Déconnexion", 
+            command=self.controller.logout, 
+            font=btn_font, bg="#E53935", fg="white")
+        self.logout_button.pack(pady=20, side=tk.BOTTOM)
 
     def load_users(self):
         # Clear existing items in the treeview

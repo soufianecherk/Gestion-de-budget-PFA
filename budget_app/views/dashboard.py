@@ -8,46 +8,50 @@ class Dashboard(tk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        self.label = tk.Label(self, text="Tableau de Bord", font=("Helvetica", 16, "bold"))
+        # Couleurs et styles
+        bg_color = "#F0F0F0"  # Fond gris clair
+        btn_color = "#4CAF50"  # Vert pour les boutons
+        btn_font = ("Helvetica", 12, "bold")
+        lbl_font = ("Helvetica", 16, "bold")
+
+        self.configure(bg=bg_color)
+
+        self.label = tk.Label(self, text="Tableau de Bord", font=lbl_font, bg=bg_color, fg="#333333")
         self.label.pack(pady=20)
+
+        button_style = {"font": btn_font, "bg": btn_color, "fg": "white", "height": 2, "width": 25}
 
         self.transactions_button = tk.Button(self, text="Transactions", 
                                              command=lambda: self.controller.show_frame("Transactions"), 
-                                             font=("Helvetica", 12), height=2, width=20)
+                                             **button_style)
         self.transactions_button.pack(pady=10)
 
         self.history_button = tk.Button(self, text="Historique", 
                                         command=lambda: self.controller.show_frame("History"), 
-                                        font=("Helvetica", 12), height=2, width=20)
+                                        **button_style)
         self.history_button.pack(pady=10)
 
         self.budget_summary_button = tk.Button(self, text="Résumé Budget", 
                                                command=lambda: self.controller.show_frame("BudgetSummary"), 
-                                               font=("Helvetica", 12), height=2, width=20)
+                                               **button_style)
         self.budget_summary_button.pack(pady=10)
 
         self.goals_button = tk.Button(self, text="Objectifs", 
                                       command=lambda: self.controller.show_frame("Goals"), 
-                                      font=("Helvetica", 12), height=2, width=20)
+                                      **button_style)
         self.goals_button.pack(pady=10)
 
         self.notes_button = tk.Button(self, text="Notes", 
                                       command=lambda: self.controller.show_frame("Notes"), 
-                                      font=("Helvetica", 12), height=2, width=20)
+                                      **button_style)
         self.notes_button.pack(pady=10)
 
         self.graphs_button = tk.Button(self, text="Graphiques", 
                                        command=lambda: self.controller.show_frame("GraphsWindow"), 
-                                       font=("Helvetica", 12), height=2, width=20)
+                                       **button_style)
         self.graphs_button.pack(pady=10)
 
         self.logout_button = tk.Button(self, text="Déconnexion", 
-                                       command=self.logout, 
-                                       font=("Helvetica", 12))
+                                       command=self.controller.logout, 
+                                       font=btn_font, bg="#E53935", fg="white")
         self.logout_button.pack(pady=20, side=tk.BOTTOM)
-
-        self.label.pack(anchor="center")
-
-    def logout(self):
-        self.controller.show_frame("Login")
-

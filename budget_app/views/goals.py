@@ -27,20 +27,24 @@ class Goals(tk.Frame):
         self.current_amount_entry.pack(pady=5)
         self.current_amount_entry.insert(0, "Montant Actuel")
 
+        # Couleurs et styles
+        btn_color = "#4CAF50"  # Vert pour les boutons
+        btn_font = ("Helvetica", 12, "bold")
+        
         # Boutons pour ajouter, modifier, supprimer et effacer
         button_frame = tk.Frame(self)
         button_frame.pack(pady=10)
 
-        self.add_button = tk.Button(button_frame, text="Ajouter Objectif", command=self.add_goal)
+        self.add_button = tk.Button(button_frame, text="Ajouter Objectif", command=self.add_goal, font=btn_font, bg=btn_color, fg="white")
         self.add_button.grid(row=0, column=0, padx=5, pady=3)
 
-        self.update_button = tk.Button(button_frame, text="Modifier Objectif", command=self.update_goal)
+        self.update_button = tk.Button(button_frame, text="Modifier Objectif", command=self.update_goal, font=btn_font, bg=btn_color, fg="white")
         self.update_button.grid(row=0, column=1, padx=5, pady=3)
 
-        self.delete_button = tk.Button(button_frame, text="Supprimer Objectif", command=self.delete_goal)
+        self.delete_button = tk.Button(button_frame, text="Supprimer Objectif", command=self.delete_goal, font=btn_font, bg=btn_color, fg="white")
         self.delete_button.grid(row=0, column=2, padx=5, pady=3)
 
-        self.clear_button = tk.Button(button_frame, text="Effacer", command=self.clear_fields)
+        self.clear_button = tk.Button(button_frame, text="Effacer", command=self.clear_fields, font=btn_font, bg=btn_color, fg="white")
         self.clear_button.grid(row=0, column=3, padx=5, pady=3)
 
         # Création du Treeview
@@ -63,8 +67,8 @@ class Goals(tk.Frame):
 
         # Ajout d'un bouton pour revenir au tableau de bord
         self.back_button = tk.Button(self, text="Retour au Tableau de Bord", 
-                                     command=lambda: self.controller.show_frame("Dashboard"))
-        self.back_button.pack(pady=5)
+                                     command=lambda: self.controller.show_frame("Dashboard"), font=btn_font, bg="#2196F3", fg="white")
+        self.back_button.pack(pady=20)
 
     def add_goal(self):
         description = self.description_entry.get()

@@ -32,8 +32,9 @@ class BudgetSummary(tk.Frame):
         self.load_summary()
 
         # Ajout d'un bouton pour revenir au tableau de bord
+        btn_font = ("Helvetica", 12, "bold")
         self.back_button = tk.Button(self, text="Retour au Tableau de Bord", 
-                                     command=lambda: self.controller.show_frame("Dashboard"))
+                                     command=lambda: self.controller.show_frame("Dashboard"), font=btn_font, bg="#2196F3", fg="white")
         self.back_button.pack(pady=5)
 
     def load_summary(self):
